@@ -13,26 +13,11 @@ Campus360 provides a simple, offline-first, and student-friendly solution that a
 
 > Campus360 is not meant to be a full indoor GPS but a lightweight helper tool for campus orientation.
 
+
 ---
 
 ## Architecture Overview
-
-
----
-
-## Targeted Users
-
-Campus360 is designed for a diverse set of users including students, faculty, administrative staff, and visitors.
-
-### Persona 1 — Rahul Gandhi (19)
-- First-year international student  
-- Needs help locating classrooms  
-- Workflow: Opens app → searches “J305” → views map → reaches destination confidently  
-
-### Persona 2 — Babar Azam (35)
-- Visiting lecturer  
-- Needs efficient navigation inside the building  
-- Workflow: Opens app → browses POIs → selects Auditorium → follows recommended route  
+<img width="1024" height="1024" alt="1764079651292" src="https://github.com/user-attachments/assets/00b9d5cc-b3d8-4e68-a156-4cd8b279ce2b" />
 
 ---
 
@@ -52,98 +37,49 @@ Campus360 is designed for a diverse set of users including students, faculty, ad
 | US10 | User | Get reminders to leave for events | Arrive on time | Travel-time-based notifications |
 
 ---
+### Development Status
 
-## App Context & Data Management
+Track the development status of the app.
 
-Campus360 operates **entirely offline**.  
-All resources are stored locally, ensuring privacy and responsiveness.
+Use
+[ ] for not implemented
+[x] for implemented.
 
-### System Overview
-- User searches for a room or POI  
-- App retrieves data from bundled JSON files  
-- Floorplan images are displayed  
-- Rooms or POIs are highlighted  
-- Basic step-wise navigation is shown  
+[ ] US1
 
-### Target Hardware Requirements
-- Android smartphones (5–7 inch screens recommended)  
-- Minimum OS: **Android 9 (API 28)**  
-- Input: Tap, pan, pinch-to-zoom  
+[ ] US2
 
-### Data Collected  
-All data stays on the device:
-- Search queries  
-- Selected POIs/rooms  
-- User preferences (favorites, accessibility mode)  
+[ ] US3
 
-### Data Sources  
-- JSON files (rooms, POIs, routing data)  
-- Indoor map images (PNG/JPG)  
-- User inputs  
+[ ] US4
 
-### Data Lifecycle  
-- Temporary session data cleared on app exit  
-- Persistent local data only for user preferences  
-- No cloud storage or external communication  
+[ ] US5
 
+[ ] US6
+
+[ ] US7
+
+[ ] US8
+
+[ ] US9
+
+[ ] US10
 ---
-
-## Minimal Viable Product (MVP)
-
-The MVP includes:
-
-- Room search  
-- POI browsing  
-- Room details screen  
-- Interactive floorplan viewer (zoom/pan)  
-- Marker highlighting selected room  
-- Basic navigation instructions  
-
----
-
-## Development Plan
-
-| Phase | Timeline | Tasks |
-|-------|----------|--------|
-| P1 | Week 1–2 | Requirements, floorplan design, UI wireframes |
-| P2 | Week 2–3 | Project setup, JSON integration, base activities |
-| P3 | Week 3–4 | Search, POI categories, details view |
-| P4 | Week 4–5 | Floorplan viewer, marker placement |
-| P5 | Week 5–6 | Basic directions implementation |
-| P6 | Week 6–7 | Testing, debugging, polishing |
-
----
-
-## Development Risks
-
-### Technical Risks
-- Incorrect room positions  
-- Misaligned floor plans  
-- Gesture handling issues (zoom/pan)  
-
-### Data Risks
-- Missing or incorrect room/POI data  
-- Inconsistent floor map design  
-
-### Project Risks
-- Limited time for full testing  
-- Uneven team workload  
-
-### Mitigation
-- Early data validation  
-- Frequent integration testing  
-- Weekly team sync meetings  
-
----
-
 ## How to Use
-(To be updated after UI finalization)
+  To be upadated in future
+### Build
 
----
-
-## Build Instructions
-
-### Build (Gradle)
-```bash
+Using Gradle (from project root):
 ./gradlew clean assembleDebug
+The APK is generated under `app/build/outputs/apk/debug/app-debug.apk`.
+
+### Test
+
+./gradlew test --rerun-tasks
+
+### Run
+
+Android Studio
+- Open the project in Android Studio.
+- Select a device/emulator and click Run.
 
