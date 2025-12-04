@@ -1,5 +1,7 @@
 # Campus360
 
+[![Android CI](https://github.com/bth-dipt-pa1469/h25-team19-campus360/actions/workflows/android.yml/badge.svg)](https://github.com/bth-dipt-pa1469/h25-team19-campus360/actions/workflows/android.yml)
+
 ## Introduction
 Campus360 is an Android-based indoor navigation app designed for students, faculty, and visitors at Blekinge Institute of Technology (BTH). Traditional navigation tools like Google Maps and OpenStreetMap do not support indoor routing, leading to confusion for new visitors once they enter campus buildings.
 
