@@ -113,3 +113,37 @@ object MockData {
 //            description = ""
 //        )
     )
+val buildings = listOf(
+        Building("j_block", "J Block", 5, "Applied Science and Technology Building"),
+        Building("b1", "Hall Building", 12, "Main academic building"),
+        Building("b2", "EV Building", 17, "Engineering and Visual Arts")
+    )
+
+    val recentSearches = listOf(
+        RecentSearch("J1610", System.currentTimeMillis() - 3600000),
+        RecentSearch("Cafeteria", System.currentTimeMillis() - 7200000),
+        RecentSearch("Seminar Hall", System.currentTimeMillis() - 86400000)
+    )
+
+    val notifications = listOf(
+        Notification(
+            id = "n1",
+            title = "Room Change Alert",
+            message = "Seminar moved to Seminar Hall",
+            timestamp = "2 hours ago",
+            isRead = false,
+            type = NotificationType.ALERT
+        ),
+        Notification(
+            id = "n2",
+            title = "Map Update",
+            message = "New floor plans available for J Block",
+            timestamp = "1 day ago",
+            isRead = true,
+            type = NotificationType.UPDATE
+        )
+    )
+    
+    val favoriteRoomIds = mutableListOf("j1610", "j1630", "j1650")
+    val favoritePOIIds = mutableListOf("poi_washrooms")
+}
