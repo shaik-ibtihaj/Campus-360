@@ -53,7 +53,7 @@ fun NotificationsScreen(navController: NavController) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-                        items(MockData.notifications) { notification ->
+            items(MockData.notifications) { notification ->
                 NotificationCard(
                     title = notification.title,
                     message = notification.message,
@@ -93,3 +93,82 @@ fun NotificationsScreen(navController: NavController) {
     }
 }
 
+@Composable
+fun NotificationCard(
+    title: String,
+    message: String,
+    timestamp: String,
+    isRead: Boolean,
+    type: NotificationType
+) {
+    val (icon, iconColor) = when (type) {
+        NotificationType.ALERT -> Pair(Icons.Outlined.Warning, Color(0xFFFF9800))
+        NotificationType.UPDATE -> Pair(Icons.Filled.Upgrade, Color(0xFF2196F3))
+        NotificationType.INFO -> Pair(Icons.Outlined.Info, Color(0xFF4CAF50))
+    }
+    
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = if (isRead) Color.White else Color(0xFFF3F8FF)
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(iconColor.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = iconColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        title,
+                        fontSize = 16.sp,
+                        fontWeight = if (isRead) FontWeight.Normal else FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+                    if (!isRead) {
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFF1976D2))
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    message,
+                    fontSize = 14.sp,
+                    color = Color(0xFF666666)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    timestamp,
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
