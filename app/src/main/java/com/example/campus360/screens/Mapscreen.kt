@@ -76,4 +76,73 @@ fun MapScreen(navController: NavController) {
                 }
             })
         }
-    ) { paddingValues ->
+    ) { paddingValues ->         
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF5F5F5))
+        ) {
+            val maxWidth = constraints.maxWidth.toFloat()
+            val maxHeight = constraints.maxHeight.toFloat()
+
+            // Main Map Canvas
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        translationX = offset.x
+                        translationY = offset.y
+                    }
+                    .transformable(state = state),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = BlueprintRegistry.getBlueprint(currentBuilding, currentFloor)),
+                    contentDescription = "Floor Plan ${currentBuilding.displayName} - Floor $currentFloor",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            // Building Selector
+            Card(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    MapBuilding.values().forEach { building ->
+                        val isSelected = building == currentBuilding
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(if (isSelected) Color(0xFF1976D2) else Color.Transparent)
+                                .clickable { 
+                                    currentBuilding = building
+                                    currentFloor = 1 // Reset to floor 1 when building changes
+                                    scale = 1f
+                                    offset = Offset.Zero
+                                }
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                building.displayName,
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                color = if (isSelected) Color.White else Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
