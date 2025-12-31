@@ -17,107 +17,47 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.campus360.Screen
-import com.example.campus360.data.Favorite
-import com.example.campus360.data.MockData
+import com.example.campus360.data.mock.MockData
+import com.example.campus360.viewmodel.FavoritesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen(navController: NavController) {
+fun FavoritesScreen(
+    navController: NavController,
+    viewModel: FavoritesViewModel = viewModel()
+) {
     var selectedTab by remember { mutableIntStateOf(2) }
+    var selectedCategory by remember { mutableIntStateOf(0) }
+    val categories = listOf("All", "Rooms", "POIs")
     
+    val favoriteRoomIds by viewModel.favoriteRoomIds.collectAsState()
+    val favoritePOIIds by viewModel.favoritePOIIds.collectAsState()
+    
+    val favoriteRooms = MockData.rooms.filter { favoriteRoomIds.contains(it.id) }
+    val favoritePOIs = MockData.pointsOfInterest.filter { favoritePOIIds.contains(it.id) }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Favorites") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
         },
         bottomBar = {
             BottomNavBar(selectedTab = selectedTab, onTabSelected = { tab ->
                 selectedTab = tab
                 when (tab) {
-                    0 -> navController.navigate(Screen.Home.route)
+                    0 -> navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
                     1 -> navController.navigate(Screen.Map.route)
+                    2 -> { }
                     3 -> navController.navigate(Screen.Settings.route)
                 }
             })
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(Color(0xFFF5F5F5))
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(MockData.favorites) { favorite ->
-                FavoriteItem(favorite = favorite, onClick = { })
-            }
-        }
-    }
-}
 
-@Composable
-fun FavoriteItem(favorite: Favorite, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(Color(0xFFF0F0F0), RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Outlined.Star,
-                    contentDescription = null,
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            
-            Spacer(modifier = Modifier.width(16.dp))
-            
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    favorite.name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    "${favorite.building}, ${favorite.roomNumber}",
-                    fontSize = 14.sp,
-                    color = Color(0xFF666666)
-                )
-            }
-            
-            Icon(
-                Icons.Filled.Menu,
-                contentDescription = "Options",
-                tint = Color.Gray
-            )
-        }
-    }
-}
