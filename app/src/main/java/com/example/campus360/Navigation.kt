@@ -27,3 +27,31 @@ sealed class Screen(val route: String) {
         fun createRoute(from: String, to: String) = "navigation/$from/$to"
     }
 }
+
+@Composable
+fun Campus360NavHost(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = Screen.Home.route) {
+        composable(Screen.Home.route) {
+            HomeScreen(navController = navController)
+        }
+        composable(Screen.Search.route) {
+            SearchScreen(navController = navController)
+        }
+        composable(Screen.Map.route) {
+            MapScreen(navController = navController)
+        }
+        composable(Screen.Favorites.route) {
+            FavoritesScreen(navController = navController)
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen(navController = navController)
+        }
+        composable(Screen.Notifications.route) {
+            NotificationsScreen(navController = navController)
+        }
+        composable(Screen.POI.route) {
+            POIScreen(navController = navController)
+        }
+        composable(Screen.StartEndSelection.route) {
+            StartEndSelectionScreen(navController = navController)
+        }
