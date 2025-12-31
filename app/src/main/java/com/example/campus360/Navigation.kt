@@ -55,3 +55,30 @@ fun Campus360NavHost(navController: NavHostController) {
         composable(Screen.StartEndSelection.route) {
             StartEndSelectionScreen(navController = navController)
         }
+        composable(
+            route = Screen.RoomDetails.route,
+            arguments = listOf(navArgument("roomId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val roomId = backStackEntry.arguments?.getString("roomId") ?: ""
+            RoomDetailsScreen(navController = navController, roomId = roomId)
+        }
+        composable(
+            route = Screen.POIDetails.route,
+            arguments = listOf(navArgument("poiId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val poiId = backStackEntry.arguments?.getString("poiId") ?: ""
+            POIDetailsScreen(navController = navController, poiId = poiId)
+        }
+        composable(
+            route = Screen.Navigation.route,
+            arguments = listOf(
+                navArgument("from") { type = NavType.StringType },
+                navArgument("to") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val from = backStackEntry.arguments?.getString("from") ?: ""
+            val to = backStackEntry.arguments?.getString("to") ?: ""
+            NavigationScreen(navController = navController, from = from, to = to)
+        }
+    }
+}
