@@ -59,5 +59,85 @@ fun FavoritesScreen(
                 }
             })
         }
-    ) { paddingValues ->
+    ) { paddingValues ->         
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF5F5F5))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                categories.forEachIndexed { index, category ->
+                    FilterChip(
+                        onClick = { selectedCategory = index },
+                        label = { Text(category) },
+                        selected = selectedCategory == index,
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color(0xFF1976D2),
+                            selectedLabelColor = Color.White
+                        )
+                    )
+                }
+            }
+            
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (selectedCategory == 0 || selectedCategory == 1) {
+                    if (favoriteRooms.isNotEmpty()) {
+                        item {
+                            Text(
+                                "Rooms",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Gray,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
+                        items(favoriteRooms) { room ->
+                            FavoriteRoomCard(
+                                name = room.name,
+                                location = "${room.building} • Floor ${room.floor}",
+                                type = room.type,
+                                isFavorite = favoriteRoomIds.contains(room.id),
+                                onClick = { navController.navigate(Screen.RoomDetails.createRoute(room.id)) },
+                                onToggle = { viewModel.toggleRoomFavorite(room.id) }
+                            )
+                        }
+                    }
+                }
+                
+                if (selectedCategory == 0 || selectedCategory == 2) {
+                    if (favoritePOIs.isNotEmpty()) {
+                        item {
+                            Text(
+                                "Points of Interest",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Gray,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
+                        items(favoritePOIs) { poi ->
+                            FavoriteRoomCard(
+                                name = poi.name,
+                                location = "${poi.building} • Floor ${poi.floor}",
+                                type = poi.type.name.replace("_", " "),
+                                isFavorite = favoritePOIIds.contains(poi.id),
+                                onClick = { navController.navigate(Screen.POIDetails.createRoute(poi.id)) },
+                                onToggle = { viewModel.togglePOIFavorite(poi.id) }
+                            )
+                        }
+                    }
+                }
+
 
