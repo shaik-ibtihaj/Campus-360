@@ -146,3 +146,97 @@ fun MapScreen(navController: NavController) {
                     }
                 }
             }
+                        // Floor Selector and Zoom Controls
+            Column(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Floor controls
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        IconButton(
+                            onClick = { if (currentFloor < currentBuilding.maxFloors) currentFloor++ },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Floor Up")
+                        }
+                        
+                        Text(
+                            "$currentFloor",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                        
+                        IconButton(
+                            onClick = { if (currentFloor > 1) currentFloor-- },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Floor Down")
+                        }
+                    }
+                }
+
+                // Zoom controls (+/-)
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        IconButton(
+                            onClick = { scale = (scale * 1.2f).coerceAtMost(5f) },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = "Zoom In")
+                        }
+                        
+                        HorizontalDivider(modifier = Modifier.width(24.dp))
+                        
+                        IconButton(
+                            onClick = { 
+                                scale = (scale / 1.2f).coerceAtLeast(1f)
+                                if (scale == 1f) offset = Offset.Zero
+                            },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Icon(Icons.Default.Remove, contentDescription = "Zoom Out")
+                        }
+                    }
+                }
+            }
+
+            // Action Buttons
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp)
+            ) {
+                FloatingActionButton(
+                    onClick = { navController.navigate(Screen.StartEndSelection.route) },
+                    containerColor = Color(0xFF1976D2),
+                    elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.Navigation,
+                        contentDescription = "Plan Route",
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+    }
+}
+
