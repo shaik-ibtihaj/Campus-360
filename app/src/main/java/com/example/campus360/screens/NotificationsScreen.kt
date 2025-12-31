@@ -53,3 +53,43 @@ fun NotificationsScreen(navController: NavController) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+                        items(MockData.notifications) { notification ->
+                NotificationCard(
+                    title = notification.title,
+                    message = notification.message,
+                    timestamp = notification.timestamp,
+                    isRead = notification.isRead,
+                    type = notification.type
+                )
+            }
+            
+            if (MockData.notifications.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                Icons.Outlined.Notifications,
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp),
+                                tint = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                "No notifications",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
