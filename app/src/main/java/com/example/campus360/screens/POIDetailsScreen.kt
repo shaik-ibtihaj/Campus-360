@@ -73,4 +73,76 @@ fun POIDetailsScreen(navController: NavController, poiId: String) {
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
         }
-    ) { paddingValues ->
+    ) {         
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF5F5F5))
+                .verticalScroll(rememberScrollState())
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(color.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(80.dp),
+                    tint = color
+                )
+            }
+            
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        poi.name,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Outlined.LocationOn,
+                            contentDescription = null,
+                            tint = Color.Gray,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "${poi.building} • Floor ${poi.floor}",
+                            fontSize = 16.sp,
+                            color = Color.Gray
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Filled.Category,
+                                contentDescription = null,
+                                tint = Color.Gray,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            poi.type.name.replace("_", " "),
+                            fontSize = 16.sp,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
+
