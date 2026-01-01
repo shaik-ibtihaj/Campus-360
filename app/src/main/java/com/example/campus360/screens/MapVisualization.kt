@@ -92,3 +92,86 @@ fun IndoorMapCanvas(
                 (scaledHeight * zoom).toInt()
             )
         )
+                if (showGraph) {
+            edges.forEach { edge ->
+                val fromNode = nodes.find { it.id == edge.fromNodeId }
+                val toNode = nodes.find { it.id == edge.toNodeId }
+
+                if (fromNode != null && toNode != null) {
+                    drawLine(
+                        color = Color.Red,
+                        start = project(fromNode.x, fromNode.y),
+                        end = project(toNode.x, toNode.y),
+                        strokeWidth = 2f
+                    )
+                }
+            }
+        }
+
+        if (showGraph) {
+            nodes.forEach { node ->
+                drawCircle(
+                    color = Color.Blue,
+                    radius = 5f,
+                    center = project(node.x, node.y)
+                )
+            }
+        }
+
+        if (path.size >= 2) {
+            val pathLine = Path()
+            val start = project(path[0].x, path[0].y)
+            pathLine.moveTo(start.x, start.y)
+            
+            for (i in 1 until path.size) {
+                val next = project(path[i].x, path[i].y)
+                pathLine.lineTo(next.x, next.y)
+            }
+            
+            drawPath(
+                path = pathLine,
+                color = Color.Blue,
+                style = Stroke(
+                    width = 6f,
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 10f), 0f)
+                )
+            )
+        }
+
+        markerPosition?.let { pos ->
+            val screenPos = project(pos.x, pos.y)
+            drawCircle(
+                color = Color(0xFF4CAF50).copy(alpha = 0.3f),
+                radius = 20f * pulseScale,
+                center = screenPos
+            )
+            drawCircle(
+                color = Color(0xFF4CAF50),
+                radius = 10f,
+                center = screenPos
+            )
+        }
+    }
+}
+
+@Composable
+fun MapVisualization(
+    floor: Int,
+    nodes: List<NavigationNode>,
+    edges: List<NavigationEdge>,
+    path: List<NavigationNode>,
+    currentStepIndex: Int,
+    showGraph: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    val nodesOnFloor = nodes.filter { it.floor == floor }
+    val edgesOnFloor = edges.filter { edge ->
+        val fromNode = nodes.find { it.id == edge.fromNodeId }
+        val toNode = nodes.find { it.id == edge.toNodeId }
+        fromNode?.floor == floor && toNode?.floor == floor
+    }
+    val pathOnFloor = path.filter { it.floor == floor }
+    
+    var animatedMarkerPosition by remember { mutableStateOf<Offset?>(null) }
+    var animationProgress by remember { mutableStateOf(0f) }
+
