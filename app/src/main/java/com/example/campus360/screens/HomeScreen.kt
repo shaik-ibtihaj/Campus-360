@@ -75,3 +75,120 @@ fun HomeScreen(navController: NavController) {
                 .background(Color(0xFFF5F5F5))
                 .padding(16.dp)
         ) {
+                        OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate(Screen.Search.route) },
+                placeholder = { Text("Search", color = Color.Gray) },
+                leadingIcon = {
+                    Icon(Icons.Outlined.Search, contentDescription = "Search", tint = Color.Gray)
+                },
+                enabled = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledContainerColor = Color.White,
+                    disabledBorderColor = Color(0xFFE0E0E0)
+                ),
+                shape = RoundedCornerShape(12.dp)
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                QuickAccessCard(
+                    icon = Icons.Outlined.Home,
+                    label = "Rooms",
+                    modifier = Modifier.weight(1f),
+                    onClick = { navController.navigate(Screen.Search.route) }
+                )
+                QuickAccessCard(
+                    icon = Icons.Outlined.LocationOn,
+                    label = "POIs",
+                    modifier = Modifier.weight(1f),
+                    onClick = { navController.navigate(Screen.POI.route) }
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                QuickAccessCard(
+                    icon = Icons.Outlined.FavoriteBorder,
+                    label = "Favorites",
+                    modifier = Modifier.weight(1f),
+                    onClick = { navController.navigate(Screen.Favorites.route) }
+                )
+                QuickAccessCard(
+                    icon = Icons.Outlined.LocationOn,
+                    label = "Map",
+                    modifier = Modifier.weight(1f),
+                    onClick = { navController.navigate(Screen.Map.route) }
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Recent Searches",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+                if (recentSearches.isNotEmpty()) {
+                    TextButton(
+                        onClick = { viewModel.clearSearchHistory() },
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text("Clear", color = MaterialTheme.colorScheme.primary)
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            if (recentSearches.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "No recent searches yet",
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
+                }
+            } else {
+                recentSearches.forEach { search ->
+                    RecentSearchItem(
+                        query = search.query,
+                        onClick = {
+                            viewModel.addSearchQuery(search.query)
+                            val room = MockData.rooms.find { it.name.contains(search.query, ignoreCase = true) }
+                            if (room != null) {
+                                navController.navigate(Screen.RoomDetails.createRoute(room.id))
+                            } else {
+                                navController.navigate(Screen.Search.route)
+                            }
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+            }
+        }
+    }
+}
+
