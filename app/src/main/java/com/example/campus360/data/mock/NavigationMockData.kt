@@ -67,7 +67,43 @@ object NavigationMockData {
         // =========================
         NavigationNode("washroom_west", "Washroom", 1, 900f, 1110f, NodeType.RESTROOM),
         NavigationNode("washroom_east", "Washroom", 1, 3860f, 1720f, NodeType.RESTROOM),
-
-
-
     )
+
+    val navigationEdges = listOf(
+
+        // =========================
+        // Seminar Hall Path
+        // =========================
+        NavigationEdge("seminar_hall", "conn_1", 1f),
+        NavigationEdge("conn_1", "conn_2", 1f),
+        NavigationEdge("conn_2", "washroom_west", 1f),
+        NavigationEdge("conn_2", "conn_3", 1f),
+
+        // =========================
+        // Room Corridor (J1610–J1660)
+        // =========================
+        NavigationEdge("conn_3", "room_1610", 1f),
+        NavigationEdge("room_1610", "room_1620", 1f),
+        NavigationEdge("room_1620", "room_1630", 1f),
+        NavigationEdge("room_1630", "conn_4", 1f),
+        NavigationEdge("conn_4", "room_1640", 1f),
+        NavigationEdge("room_1640", "room_1650_1660", 1f),
+
+        // =========================
+        // East Wing Path
+        // =========================
+        NavigationEdge("conn_4", "conn_5", 1f),
+        NavigationEdge("conn_5", "cafeteria", 1f),
+        NavigationEdge("cafeteria", "room_1670", 1f),
+        NavigationEdge("room_1670", "room_1680", 1f),
+        NavigationEdge("room_1680", "conn_6", 1f),
+
+        // =========================
+        // Amenities & Exit
+        // =========================
+        NavigationEdge("conn_6", "workspace", 1f),
+        NavigationEdge("conn_6", "washroom_east", 1f),
+        NavigationEdge("washroom_east", "entrance_main", 1f)
+    )
+
+    val navigationGraph = NavigationGraph(navigationNodes, navigationEdges)
