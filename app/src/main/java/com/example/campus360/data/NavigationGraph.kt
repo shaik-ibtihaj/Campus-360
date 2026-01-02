@@ -83,3 +83,24 @@ class NavigationGraph(
         return total
     }
 }
+
+data class NavigationInstruction(
+    val type: InstructionType,
+    val description: String,
+    val distance: Float,
+    val fromNode: NavigationNode,
+    val toNode: NavigationNode,
+    val icon: String
+)
+
+enum class InstructionType {
+    START,
+    STRAIGHT,
+    TURN_LEFT,
+    TURN_RIGHT,
+    STAIRS_UP,
+    STAIRS_DOWN,
+    ELEVATOR_UP,
+    ELEVATOR_DOWN,
+    ARRIVE
+}
