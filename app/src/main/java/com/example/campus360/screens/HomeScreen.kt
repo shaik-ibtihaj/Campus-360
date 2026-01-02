@@ -75,7 +75,7 @@ fun HomeScreen(navController: NavController) {
                 .background(Color(0xFFF5F5F5))
                 .padding(16.dp)
         ) {
-                        OutlinedTextField(
+            OutlinedTextField(
                 value = "",
                 onValueChange = {},
                 modifier = Modifier
@@ -192,3 +192,106 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
+@Composable
+fun QuickAccessCard(
+    icon: ImageVector,
+    label: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .height(100.dp)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Icon(
+                icon,
+                contentDescription = label,
+                modifier = Modifier.size(32.dp),
+                tint = Color.Black
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                label,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+        }
+    }
+}
+
+@Composable
+fun RecentSearchItem(query: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.Outlined.Search,
+                contentDescription = null,
+                tint = Color.Black
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                query,
+                fontSize = 15.sp,
+                color = Color.Black
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomNavBar(
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit
+) {
+    NavigationBar(
+        containerColor = Color.White,
+        tonalElevation = 8.dp
+    ) {
+        NavigationBarItem(
+            icon = { Icon(if (selectedTab == 0) Icons.Filled.Home else Icons.Outlined.Home, contentDescription = "Home") },
+            label = { Text("Home") },
+            selected = selectedTab == 0,
+            onClick = { onTabSelected(0) }
+        )
+        NavigationBarItem(
+            icon = { Icon(if (selectedTab == 1) Icons.Filled.LocationOn else Icons.Outlined.LocationOn, contentDescription = "Map") },
+            label = { Text("Map") },
+            selected = selectedTab == 1,
+            onClick = { onTabSelected(1) }
+        )
+        NavigationBarItem(
+            icon = { Icon(if (selectedTab == 2) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder, contentDescription = "Favorites") },
+            label = { Text("Favorites") },
+            selected = selectedTab == 2,
+            onClick = { onTabSelected(2) }
+        )
+        NavigationBarItem(
+            icon = { Icon(if (selectedTab == 3) Icons.Filled.Settings else Icons.Outlined.Settings, contentDescription = "Settings") },
+            label = { Text("Settings") },
+            selected = selectedTab == 3,
+            onClick = { onTabSelected(3) }
+        )
+    }
+}
