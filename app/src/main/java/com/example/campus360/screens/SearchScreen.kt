@@ -51,7 +51,8 @@ fun SearchScreen(navController: NavController) {
         }
         matchesQuery && matchesFilter
     }
-        Scaffold(
+
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Search") },
@@ -128,4 +129,107 @@ fun SearchScreen(navController: NavController) {
                     }
                 }
             }
+            
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(filteredRooms) { room ->
+                    RoomCard(
+                        room = room,
+                        onClick = {
+                            viewModel.addSearchQuery(room.name)
+                            navController.navigate(Screen.RoomDetails.createRoute(room.id))
+                        }
+                    )
+                }
+                
+                if (filteredRooms.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "No results found",
+                                color = Color.Gray,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
+@Composable
+fun RoomCard(room: Room, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    room.name,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "${room.building} • Floor ${room.floor}",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    room.type,
+                    fontSize = 13.sp,
+                    color = Color(0xFF666666)
+                )
+            }
+            
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    "Cap: ${room.capacity}",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+//                if (room.currentOccupancy != null) {
+//                    Text(
+//                        "${room.currentOccupancy}/${room.capacity}",
+//                        fontSize = 14.sp,
+//                        fontWeight = FontWeight.Medium,
+//                        color = if (room.currentOccupancy < room.capacity * 0.8) Color(0xFF4CAF50) else Color(0xFFFF9800)
+//                    )
+//                    Text(
+//                        "occupancy",
+//                        fontSize = 12.sp,
+//                        color = Color.Gray
+//                    )
+//                } else {
+//                    Text(
+//                        "Cap: ${room.capacity}",
+//                        fontSize = 14.sp,
+//                        color = Color.Gray
+//                    )
+//                }
+            }
+        }
+    }
+}
