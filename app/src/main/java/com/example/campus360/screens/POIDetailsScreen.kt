@@ -73,7 +73,7 @@ fun POIDetailsScreen(navController: NavController, poiId: String) {
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
         }
-    ) {         
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -145,4 +145,48 @@ fun POIDetailsScreen(navController: NavController, poiId: String) {
                     }
                 }
             }
-
+            
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        "Description",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        poi.description,
+                        fontSize = 16.sp,
+                        color = Color(0xFF666666),
+                        lineHeight = 24.sp
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Button(
+                onClick = { navController.navigate(Screen.Navigation.createRoute("current", poi.name)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Icon(Icons.Filled.Navigation, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Get Directions", fontSize = 16.sp)
+            }
+            
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
