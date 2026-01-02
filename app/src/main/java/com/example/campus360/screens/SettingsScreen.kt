@@ -53,3 +53,90 @@ fun SettingsScreen(navController: NavController) {
             })
         }
     ) { paddingValues ->
+                Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF5F5F5))
+                .verticalScroll(rememberScrollState())
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(title = "Appearance") {
+                SettingsToggleItem(
+                    icon = Icons.Filled.Brightness4,
+                    title = "Dark Mode",
+                    subtitle = "Use dark theme",
+                    checked = darkMode,
+                    onCheckedChange = { darkMode = it }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(title = "Notifications") {
+                SettingsToggleItem(
+                    icon = Icons.Outlined.Notifications,
+                    title = "Push Notifications",
+                    subtitle = "Receive alerts and updates",
+                    checked = notifications,
+                    onCheckedChange = { notifications = it }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(title = "Maps") {
+                SettingsToggleItem(
+                    icon = Icons.Filled.Download,
+                    title = "Offline Maps",
+                    subtitle = "Download maps for offline use",
+                    checked = offlineMaps,
+                    onCheckedChange = { offlineMaps = it }
+                )
+                HorizontalDivider(color = Color(0xFFF0F0F0))
+                SettingsClickItem(
+                    icon = Icons.Outlined.Delete,
+                    title = "Clear Cache",
+                    subtitle = "Free up storage space",
+                    onClick = { }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SettingsSection(title = "About") {
+                SettingsClickItem(
+                    icon = Icons.Outlined.Info,
+                    title = "App Version",
+                    subtitle = "1.0.0",
+                    onClick = { }
+                )
+                HorizontalDivider(color = Color(0xFFF0F0F0))
+                SettingsClickItem(
+                    icon = Icons.Filled.Article,
+                    title = "Terms of Service",
+                    subtitle = null,
+                    onClick = { }
+                )
+                HorizontalDivider(color = Color(0xFFF0F0F0))
+                SettingsClickItem(
+                    icon = Icons.Outlined.Lock,
+                    title = "Privacy Policy",
+                    subtitle = null,
+                    onClick = { }
+                )
+                HorizontalDivider(color = Color(0xFFF0F0F0))
+                SettingsClickItem(
+                    icon = Icons.Outlined.Send,
+                    title = "Send Feedback",
+                    subtitle = null,
+                    onClick = { }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
