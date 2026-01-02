@@ -49,3 +49,60 @@ fun POIScreen(navController: NavController) {
             )
         }
     ) { paddingValues ->
+                Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color(0xFFF5F5F5))
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        FilterChip(
+                            onClick = { selectedFilter = null },
+                            label = { Text("All") },
+                            selected = selectedFilter == null,
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = Color(0xFF1976D2),
+                                selectedLabelColor = Color.White
+                            )
+                        )
+                        FilterChip(
+                            onClick = { selectedFilter = POIType.RESTROOM },
+                            label = { Text("Restroom") },
+                            selected = selectedFilter == POIType.RESTROOM,
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = Color(0xFF1976D2),
+                                selectedLabelColor = Color.White
+                            )
+                        )
+                    }
+                }
+            }
+            
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(filteredPOIs) { poi ->
+                    POICard(
+                        poi = poi,
+                        onClick = { navController.navigate(Screen.POIDetails.createRoute(poi.id)) }
+                    )
+                }
+            }
+        }
+    }
+}
+
