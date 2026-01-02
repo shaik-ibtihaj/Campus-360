@@ -82,3 +82,107 @@ fun StartEndSelectionScreen(navController: NavController) {
                     )
                 }
             }
+                        // Search Bar
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                placeholder = { Text("Search rooms or buildings...") },
+                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color(0xFF1976D2)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Results List
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                items(filteredRooms) { room ->
+                    ListItem(
+                        headlineContent = { Text(room.name, fontWeight = FontWeight.SemiBold) },
+                        supportingContent = { Text("${room.building} • Floor ${room.floor}") },
+                        leadingContent = {
+                            Icon(
+                                Icons.Filled.LocationOn,
+                                contentDescription = null,
+                                tint = Color(0xFF1976D2)
+                            )
+                        },
+                        modifier = Modifier
+                            .clickable {
+                                if (activeField == SelectionField.START) {
+                                    routingViewModel.setStartLocation(room.name)
+                                    activeField = SelectionField.DESTINATION
+                                } else {
+                                    routingViewModel.setDestinationLocation(room.name)
+                                }
+                                searchQuery = ""
+                            }
+                            .background(Color.White, RoundedCornerShape(8.dp))
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
+
+            // Action Button
+            if (startLocation != null && destinationLocation != null) {
+                Button(
+                    onClick = {
+                        navController.navigate(Screen.Navigation.createRoute(startLocation!!, destinationLocation!!))
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .height(56.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
+                ) {
+                    Text("Go Now", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SelectionBox(
+    label: String,
+    value: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .background(
+                if (isSelected) Color(0xFFE3F2FD) else Color(0xFFF8F9FA),
+                RoundedCornerShape(8.dp)
+            )
+            .padding(12.dp)
+    ) {
+        Text(label, fontSize = 12.sp, color = Color.Gray)
+        Text(
+            value,
+            fontSize = 16.sp,
+            fontWeight = if (value != "Select origin" && value != "Select destination") FontWeight.Bold else FontWeight.Normal,
+            color = if (isSelected) Color(0xFF1976D2) else Color.Black
+        )
+    }
+}
+
+enum class SelectionField {
+    START, DESTINATION
+}
