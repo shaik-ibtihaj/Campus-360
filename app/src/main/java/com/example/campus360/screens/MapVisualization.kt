@@ -45,6 +45,7 @@ fun IndoorMapCanvas(
 ) {
     val blueprint = ImageBitmap.imageResource(id = R.drawable.j_block_floor1)
     
+    // Zoom and pan state
     var zoom by remember { mutableStateOf(1f) }
     var pan by remember { mutableStateOf(Offset.Zero) }
 
@@ -53,7 +54,12 @@ fun IndoorMapCanvas(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTransformGestures { _, panDelta, zoomDelta, _ ->
+                    // 1. Update zoom with clamping
                     zoom = (zoom * zoomDelta).coerceIn(1f, 5f)
+                    
+                    // 2. Update pan
+                    // Panning is applied in screen space to allow the user to move 
+                    // the view naturally regardless of the zoom level.
                     pan += panDelta
                 }
             }
@@ -61,6 +67,8 @@ fun IndoorMapCanvas(
         val canvasWidth = size.width
         val canvasHeight = size.height
 
+        // Existing world-to-viewport scaling logic
+        // This ensures the blueprint fits the screen while maintaining aspect ratio
         val scale = min(
             canvasWidth / FLOOR_PLAN_WIDTH,
             canvasHeight / FLOOR_PLAN_HEIGHT
@@ -69,9 +77,14 @@ fun IndoorMapCanvas(
         val scaledWidth = FLOOR_PLAN_WIDTH * scale
         val scaledHeight = FLOOR_PLAN_HEIGHT * scale
 
+        // Base offset to center the map on the canvas before user transformation
         val offsetX = (canvasWidth - scaledWidth) / 2
         val offsetY = (canvasHeight - scaledHeight) / 2
 
+        // Transformation helper: World -> Viewport (Base Scale) -> Camera (Zoom/Pan)
+        // Zoom is applied after world scaling to maintain perfect alignment between 
+        // the background image and the navigation graph.
+        // Pan is added last to shift the final viewport into the desired position.
         fun project(x: Float, y: Float): Offset {
             val viewX = x * scale + offsetX
             val viewY = y * scale + offsetY
@@ -81,6 +94,8 @@ fun IndoorMapCanvas(
             )
         }
 
+        // 1. Draw the blueprint first
+        // We calculate its position and size by applying the same camera transforms
         drawImage(
             image = blueprint,
             dstOffset = IntOffset(
@@ -92,7 +107,9 @@ fun IndoorMapCanvas(
                 (scaledHeight * zoom).toInt()
             )
         )
-                if (showGraph) {
+
+        // 2. Draw navigation edges
+        if (showGraph) {
             edges.forEach { edge ->
                 val fromNode = nodes.find { it.id == edge.fromNodeId }
                 val toNode = nodes.find { it.id == edge.toNodeId }
@@ -102,22 +119,24 @@ fun IndoorMapCanvas(
                         color = Color.Red,
                         start = project(fromNode.x, fromNode.y),
                         end = project(toNode.x, toNode.y),
-                        strokeWidth = 2f
+                        strokeWidth = 2f // Keep stroke width consistent for readability
                     )
                 }
             }
         }
 
+        // 3. Draw navigation nodes
         if (showGraph) {
             nodes.forEach { node ->
                 drawCircle(
                     color = Color.Blue,
-                    radius = 5f,
+                    radius = 5f, // Keep radius consistent (do not over-scale)
                     center = project(node.x, node.y)
                 )
             }
         }
 
+        // Draw active path if present
         if (path.size >= 2) {
             val pathLine = Path()
             val start = project(path[0].x, path[0].y)
@@ -138,6 +157,7 @@ fun IndoorMapCanvas(
             )
         }
 
+        // Draw animated marker if present
         markerPosition?.let { pos ->
             val screenPos = project(pos.x, pos.y)
             drawCircle(
@@ -174,4 +194,88 @@ fun MapVisualization(
     
     var animatedMarkerPosition by remember { mutableStateOf<Offset?>(null) }
     var animationProgress by remember { mutableStateOf(0f) }
+    
+    val infiniteTransition = rememberInfiniteTransition(label = "marker_pulse")
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse"
+    )
+    
+    LaunchedEffect(currentStepIndex, pathOnFloor) {
+        if (pathOnFloor.isNotEmpty() && currentStepIndex < pathOnFloor.size) {
+            animationProgress = 0f
+            
+            if (currentStepIndex == 0) {
+                animatedMarkerPosition = Offset(pathOnFloor[0].x, pathOnFloor[0].y)
+            } else if (currentStepIndex < pathOnFloor.size) {
+                val start = pathOnFloor[currentStepIndex - 1]
+                val end = pathOnFloor[currentStepIndex]
+                
+                for (i in 0..100) {
+                    val progress = i / 100f
+                    animationProgress = progress
+                    animatedMarkerPosition = Offset(
+                        start.x + (end.x - start.x) * progress,
+                        start.y + (end.y - start.y) * progress
+                    )
+                    delay(20)
+                }
+            }
+        }
+    }
+    
+    Box(modifier = modifier) {
+        IndoorMapCanvas(
+            nodes = nodesOnFloor,
+            edges = edgesOnFloor,
+            path = pathOnFloor,
+            markerPosition = animatedMarkerPosition,
+            pulseScale = pulseScale,
+            showGraph = showGraph
+        )
+        
+        Text(
+            text = "Floor $floor",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF9E9E9E),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(16.dp)
+        )
+    }
+}
 
+@Composable
+fun FloorMapLegend(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .background(Color.White.copy(alpha = 0.9f))
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) 
+}
+
+@Composable
+fun LegendItem(color: Color, label: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(12.dp)
+                .background(color, CircleShape)
+        )
+        Text(
+            label,
+            fontSize = 10.sp,
+            color = Color(0xFF616161)
+        )
+    }
+}
