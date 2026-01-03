@@ -49,7 +49,7 @@ fun POIScreen(navController: NavController) {
             )
         }
     ) { paddingValues ->
-                Column(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -106,3 +106,66 @@ fun POIScreen(navController: NavController) {
     }
 }
 
+@Composable
+fun POICard(poi: PointOfInterest, onClick: () -> Unit) {
+    val (icon, color) = getPOIIconAndColor(poi.type)
+    
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    poi.name,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "${poi.building} • Floor ${poi.floor}",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    poi.description,
+                    fontSize = 13.sp,
+                    color = Color(0xFF666666)
+                )
+            }
+        }
+    }
+}
+
+fun getPOIIconAndColor(type: POIType): Pair<ImageVector, Color> {
+    return when (type) {
+        POIType.RESTROOM -> Pair(Icons.Outlined.AccountBox, Color(0xFF2196F3))
+    }
+}
