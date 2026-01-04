@@ -45,25 +45,16 @@ Use
 [ ] for not implemented
 [x] for implemented.
 
-[ ] US1
-
-[ ] US2
-
-[ ] US3
-
-[ ] US4
-
-[ ] US5
-
-[ ] US6
-
-[ ] US7
-
-[ ] US8
-
-[ ] US9
-
-[ ] US10
+[x] US1 – Save frequently visited locations (Favorites screen implemented)
+[ ] US2 – Accessibility mode
+[ ] US3 – Real-time crowdedness
+[ ] US4 – Indoor room temperature
+[ ] US5 – Accessible routes
+[ ] US6 – Room-closure notifications
+[ ] US7 – Multi-stop routes
+[x] US8 – Offline campus maps (static offline maps available)
+[ ] US9 – Report inaccurate map data
+[ ] US10 – Event reminders
 
 ---
 ## How to Use
