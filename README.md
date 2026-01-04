@@ -5,11 +5,11 @@ Campus360 is an Android-based indoor navigation app designed for students, facul
 
 Campus360 provides a simple, offline-first, and student-friendly solution that allows users to:
 
-- Search for rooms, labs, offices, and facilities  
+- Search for rooms, labs, and offices  
 - View floor numbers and the nearest recommended entrance  
 - Explore Points of Interest (POIs)  
 - Navigate using clean, simplified indoor maps  
-- Access basic guidance from entrance → floor → room  
+- Access basic guidance  
 
 > Campus360 is not meant to be a full indoor GPS but a lightweight helper tool for campus orientation.
 
@@ -17,24 +17,25 @@ Campus360 provides a simple, offline-first, and student-friendly solution that a
 ---
 
 ## Architecture Overview
-<img width="1024" height="1024" alt="1764079651292" src="https://github.com/user-attachments/assets/00b9d5cc-b3d8-4e68-a156-4cd8b279ce2b" />
+<img width="3600" height="4800" alt="Campus360_Architecture_Diagram" src="https://github.com/user-attachments/assets/0d5b906c-be98-4eab-b00e-5486e9730c43" />
+
 
 ---
 
-## User Stories
+## User Stories![Uploading Campus360_Architecture_Diagram.png…]()
+
 
 | # | As a… | I want/need to… | So that… | Acceptance Criteria |
 |---|-------|------------------|-----------|----------------------|
-| US1 | User | Save frequently visited locations | Access them quickly | Favorites list, toggle, detail view |
-| US2 | User | Enable accessibility mode | Navigate comfortably | High-contrast UI, voice cues |
-| US3 | User | View real-time crowdedness | Choose best time to visit | Crowdedness indicator + updates |
-| US4 | User | View indoor room temperature | Choose a comfortable place | Temp display, fallback message |
-| US5 | User | Request accessible routes | Avoid stairs/barriers | Accessible routing toggle |
-| US6 | User | Receive room-closure notifications | Avoid unavailable rooms | Push alert + link to location |
-| US7 | User | Plan multi-stop routes | Move efficiently | Multi-stop UI, reorder, optimized path |
-| US8 | User | Download offline campus maps | Navigate without internet | Offline mode toggle + indicator |
-| US9 | User | Report inaccurate map data | Keep information updated | Report form + confirmation |
-| US10 | User | Get reminders to leave for events | Arrive on time | Travel-time-based notifications |
+| US1 | User | Search for a classroom or lecture hall by name or room number | Reach the correct location without confusion | Matching locations are listed; selecting a result opens details; empty and error states are handled |
+| US2 | User | Browse locations based on their category or type | Get an overview of available rooms and facilities | Categories are browsable; selecting a category shows results; selecting an item opens its details |
+| US3 | User | Follow visual, step-by-step navigation instructions | Move confidently in the correct direction | A shortest path is computed; the map highlights the route; turn-by-turn guidance is displayed |
+| US4 | User | Explore campus points of interest such as libraries or cafeterias | Make better use of campus facilities | POIs are accessible via search and categories; details include information and a route option |
+| US5 | User | Manually select a starting location | Plan a route from any chosen point | A start-location picker is available; the selected start is used for route calculation |
+| US6 | User | View destination details before starting navigation | Confirm the selected destination is correct | Details screen shows name, category, description, and actions like “View on Map” and “Start Route” |
+| US7 | User | Save frequently visited locations as favorites | Access important places quickly | Favorites section is available; locations can be added or removed; selecting a favorite opens its details |
+| US8 | User | Report navigation issues or campus inconveniences | Help improve map accuracy and user experience | Report option is available; issue details can be submitted; confirmation message is shown after submission |
+
 
 ---
 ### Development Status
@@ -45,25 +46,22 @@ Use
 [ ] for not implemented
 [x] for implemented.
 
-[ ] US1
+[x] US1
 
-[ ] US2
+[x] US2
 
-[ ] US3
+[x] US3
 
-[ ] US4
+[x] US4
 
-[ ] US5
+[x] US5
 
-[ ] US6
+[x] US6
 
-[ ] US7
+[x] US7
 
-[ ] US8
+[x] US8
 
-[ ] US9
-
-[ ] US10
 
 ---
 ## How to Use
