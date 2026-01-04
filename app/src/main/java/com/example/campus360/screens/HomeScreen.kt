@@ -13,17 +13,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.campus360.Screen
-import com.example.campus360.data.MockData
+import com.example.campus360.data.mock.MockData
+import com.example.campus360.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     var selectedTab by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory(context))
+    val recentSearches by viewModel.recentSearches.collectAsState()
     
     Scaffold(
         topBar = {
@@ -120,7 +126,7 @@ fun HomeScreen(navController: NavController) {
                     onClick = { navController.navigate(Screen.Favorites.route) }
                 )
                 QuickAccessCard(
-                    icon = Icons.Outlined.Map,
+                    icon = Icons.Outlined.LocationOn,
                     label = "Map",
                     modifier = Modifier.weight(1f),
                     onClick = { navController.navigate(Screen.Map.route) }
@@ -129,54 +135,57 @@ fun HomeScreen(navController: NavController) {
             
             Spacer(modifier = Modifier.height(32.dp))
             
-            Text(
-                "Recent Searches",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Recent Searches",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black
+                )
+                if (recentSearches.isNotEmpty()) {
+                    TextButton(
+                        onClick = { viewModel.clearSearchHistory() },
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text("Clear", color = MaterialTheme.colorScheme.primary)
+                    }
+                }
+            }
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            MockData.recentSearches.take(3).forEach { search ->
-                RecentSearchItem(
-                    query = search.query,
-                    onClick = {
-                        val room = MockData.rooms.find { it.name.contains(search.query, ignoreCase = true) }
-                        if (room != null) {
-                            navController.navigate(Screen.RoomDetails.createRoute(room.id))
-                        }
-                    }
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { },
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
+            if (recentSearches.isEmpty()) {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(vertical = 16.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        Icons.Outlined.Download,
-                        contentDescription = null,
-                        tint = Color(0xFF666666)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        "Offline Maps Available",
-                        fontSize = 14.sp,
-                        color = Color(0xFF666666)
+                        "No recent searches yet",
+                        color = Color.Gray,
+                        fontSize = 14.sp
                     )
+                }
+            } else {
+                recentSearches.forEach { search ->
+                    RecentSearchItem(
+                        query = search.query,
+                        onClick = {
+                            viewModel.addSearchQuery(search.query)
+                            val room = MockData.rooms.find { it.name.contains(search.query, ignoreCase = true) }
+                            if (room != null) {
+                                navController.navigate(Screen.RoomDetails.createRoute(room.id))
+                            } else {
+                                navController.navigate(Screen.Search.route)
+                            }
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }
@@ -267,7 +276,7 @@ fun BottomNavBar(
             onClick = { onTabSelected(0) }
         )
         NavigationBarItem(
-            icon = { Icon(if (selectedTab == 1) Icons.Filled.Map else Icons.Outlined.Map, contentDescription = "Map") },
+            icon = { Icon(if (selectedTab == 1) Icons.Filled.LocationOn else Icons.Outlined.LocationOn, contentDescription = "Map") },
             label = { Text("Map") },
             selected = selectedTab == 1,
             onClick = { onTabSelected(1) }
