@@ -76,7 +76,7 @@ fun MapScreen(navController: NavController) {
                 }
             })
         }
-    ) { paddingValues ->         
+    ) { paddingValues ->
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
@@ -146,7 +146,8 @@ fun MapScreen(navController: NavController) {
                     }
                 }
             }
-                        // Floor Selector and Zoom Controls
+
+            // Floor Selector and Zoom Controls
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)

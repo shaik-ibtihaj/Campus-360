@@ -7,6 +7,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Elevator
+import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -25,6 +28,7 @@ import com.example.campus360.data.model.*
 import com.example.campus360.data.mock.*
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.campus360.viewmodel.RoutingViewModel
 
@@ -38,7 +42,7 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
     var showInstructions by remember { mutableStateOf(false) }
     
     val startNode = remember {
-        NavigationMockData.getNavigationNodeForRoom(from)
+        NavigationMockData.getNavigationNodeForRoom(from) 
             ?: NavigationMockData.findNodeByName(from)
             ?: NavigationMockData.navigationNodes.first()
     }
@@ -64,6 +68,7 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
             NavigationInstructionGenerator().generateInstructions(path, NavigationMockData.navigationEdges)
         } else emptyList()
     }
+    
     LaunchedEffect(isNavigating) {
         if (isNavigating && path.isNotEmpty()) {
             currentFloor = path[0].floor
@@ -107,6 +112,7 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            // 1. Map section (Canvas)
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -129,11 +135,9 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                             .padding(16.dp)
                     )
 
+                    // Optional: Floor change indicator as a small overlay on the map
                     if (currentFloor != startNode.floor && currentFloor != endNode.floor) {
-                        val floorChangeNode = path.find {
-                            it.floor == currentFloor &&
-                                it.type in listOf(NodeType.STAIRS, NodeType.ELEVATOR)
-                        }
+                        val floorChangeNode = path.find { it.floor == currentFloor && it.type in listOf(NodeType.STAIRS, NodeType.ELEVATOR) }
                         if (floorChangeNode != null) {
                             Surface(
                                 modifier = Modifier
@@ -148,9 +152,7 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
-                                        if (floorChangeNode.type == NodeType.STAIRS)
-                                            Icons.Filled.MoreVert
-                                        else Icons.Filled.Elevator,
+                                        if (floorChangeNode.type == NodeType.STAIRS) Icons.Filled.MoreVert else Icons.Filled.Elevator,
                                         contentDescription = null,
                                         tint = Color.White,
                                         modifier = Modifier.size(18.dp)
@@ -183,7 +185,10 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                         }
                     }
                 }
-            }Surface(
+            }
+
+            // 2. Bottom instruction panel
+            Surface(
                 modifier = Modifier.fillMaxWidth(),
                 color = Color.White,
                 shadowElevation = 8.dp
@@ -196,6 +201,7 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                     if (isNavigating && currentStepIndex < instructions.size) {
                         val currentInstruction = instructions[currentStepIndex]
                         
+                        // Current Instruction Detail
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
@@ -210,10 +216,8 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                                     when (currentInstruction.type) {
                                         InstructionType.TURN_LEFT -> Icons.Filled.ArrowBack
                                         InstructionType.TURN_RIGHT -> Icons.Filled.ArrowForward
-                                        InstructionType.STAIRS_UP,
-                                        InstructionType.STAIRS_DOWN -> Icons.Filled.MoreVert
-                                        InstructionType.ELEVATOR_UP,
-                                        InstructionType.ELEVATOR_DOWN -> Icons.Filled.Elevator
+                                        InstructionType.STAIRS_UP, InstructionType.STAIRS_DOWN -> Icons.Filled.MoreVert
+                                        InstructionType.ELEVATOR_UP, InstructionType.ELEVATOR_DOWN -> Icons.Filled.Elevator
                                         InstructionType.ARRIVE -> Icons.Filled.Place
                                         else -> Icons.Filled.ArrowUpward
                                     },
@@ -247,23 +251,26 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
+                    // Stats and Controls
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text(
-                                "${(totalDistance / 75).roundToInt()} min",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1976D2)
-                            )
-                            Text(
-                                "${totalDistance.roundToInt()}m • Walking",
-                                fontSize = 12.sp,
-                                color = Color.Gray
-                            )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column {
+                                Text(
+                                    "${(totalDistance / 75).roundToInt()} min",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1976D2)
+                                )
+                                Text(
+                                    "${totalDistance.roundToInt()}m • Walking",
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+                            }
                         }
 
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -271,11 +278,9 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                                 Button(
                                     onClick = { isNavigating = true },
                                     shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF1976D2)
-                                    )
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
                                 ) {
-                                    Icon(Icons.Filled.Navigation, contentDescription = null)
+                                    Icon(Icons.Filled.Navigation, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Start")
                                 }
@@ -290,20 +295,21 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
                                 ) {
                                     Text("Stop")
                                 }
-                                Button(
-                                    onClick = {
-                                        routingViewModel.clearRoutingState()
-                                        navController.navigate(Screen.Home.route) {
-                                            popUpTo(Screen.Home.route) { inclusive = true }
-                                        }
-                                    },
-                                    shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF4CAF50)
-                                    )
-                                ) {
-                                    Text("Done")
-                                }
+                                    Button(
+                                        onClick = {
+                                            routingViewModel.clearRoutingState()
+                                            navController.navigate(Screen.Home.route) {
+                                                popUpTo(Screen.Home.route) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        },
+                                        shape = RoundedCornerShape(12.dp),
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                                    ) {
+                                        Text("Done")
+                                    }
+
                             }
                         }
                     }
@@ -311,6 +317,7 @@ fun NavigationScreen(navController: NavController, from: String, to: String) {
             }
         }
     }
+
 }
 
 @Composable
@@ -332,18 +339,16 @@ fun InstructionCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                when (instruction.type) {
-                    InstructionType.START -> Icons.Filled.PlayArrow
-                    InstructionType.TURN_LEFT -> Icons.Filled.ArrowBack
-                    InstructionType.TURN_RIGHT -> Icons.Filled.ArrowForward
-                    InstructionType.STRAIGHT -> Icons.Filled.ArrowUpward
-                    InstructionType.STAIRS_UP,
-                    InstructionType.STAIRS_DOWN -> Icons.Filled.MoreVert
-                    InstructionType.ELEVATOR_UP,
-                    InstructionType.ELEVATOR_DOWN -> Icons.Filled.Elevator
-                    InstructionType.ARRIVE -> Icons.Filled.Place
-                },
+          Icon(
+              when (instruction.type) {
+                  InstructionType.START -> Icons.Filled.PlayArrow
+                  InstructionType.TURN_LEFT -> Icons.Filled.ArrowBack
+                  InstructionType.TURN_RIGHT -> Icons.Filled.ArrowForward
+                  InstructionType.STRAIGHT -> Icons.Filled.ArrowUpward
+                  InstructionType.STAIRS_UP, InstructionType.STAIRS_DOWN -> Icons.Filled.MoreVert
+                  InstructionType.ELEVATOR_UP, InstructionType.ELEVATOR_DOWN -> Icons.Filled.Elevator
+                  InstructionType.ARRIVE -> Icons.Filled.Place
+              },
                 contentDescription = null,
                 modifier = Modifier.size(32.dp),
                 tint = if (isActive) Color.White else Color(0xFF1976D2)
@@ -362,26 +367,17 @@ fun InstructionCard(
                     Text(
                         "${instruction.distance.roundToInt()}m",
                         fontSize = 14.sp,
-                        color = if (isActive)
-                            Color.White.copy(alpha = 0.8f)
-                        else Color.Gray
+                        color = if (isActive) Color.White.copy(alpha = 0.8f) else Color.Gray
                     )
                 }
             }
             
-            if (instruction.type in listOf(
-                    InstructionType.STAIRS_UP,
-                    InstructionType.STAIRS_DOWN,
-                    InstructionType.ELEVATOR_UP,
-                    InstructionType.ELEVATOR_DOWN
-                )
-            ) {
+            if (instruction.type in listOf(InstructionType.STAIRS_UP, InstructionType.STAIRS_DOWN, 
+                InstructionType.ELEVATOR_UP, InstructionType.ELEVATOR_DOWN)) {
                 Box(
                     modifier = Modifier
                         .background(
-                            if (isActive)
-                                Color.White.copy(alpha = 0.2f)
-                            else Color(0xFFFF9800).copy(alpha = 0.2f),
+                            if (isActive) Color.White.copy(alpha = 0.2f) else Color(0xFFFF9800).copy(alpha = 0.2f),
                             RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 12.dp, vertical = 6.dp)

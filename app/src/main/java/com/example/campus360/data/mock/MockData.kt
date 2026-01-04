@@ -54,6 +54,7 @@ object MockData {
             capacity = 45,
             amenities = listOf("Projector", "Whiteboard")
         ),
+
         Room(
             id = "j1660",
             name = "J1660",
@@ -113,7 +114,8 @@ object MockData {
 //            description = ""
 //        )
     )
-val buildings = listOf(
+
+    val buildings = listOf(
         Building("j_block", "J Block", 5, "Applied Science and Technology Building"),
         Building("b1", "Hall Building", 12, "Main academic building"),
         Building("b2", "EV Building", 17, "Engineering and Visual Arts")

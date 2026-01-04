@@ -82,7 +82,8 @@ fun StartEndSelectionScreen(navController: NavController) {
                     )
                 }
             }
-                        // Search Bar
+
+            // Search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },

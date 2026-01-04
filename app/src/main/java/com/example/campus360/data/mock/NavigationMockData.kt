@@ -7,6 +7,9 @@ object NavigationMockData {
 
     val navigationNodes = listOf(
 
+        // =========================
+        // Entrance
+        // =========================
         NavigationNode(
             id = "entrance_main",
             name = "Entrance",
@@ -15,7 +18,10 @@ object NavigationMockData {
             y = 1720f,
             type = NodeType.ENTRANCE
         ),
-      
+
+        // =========================
+        // Seminar Hall
+        // =========================
         NavigationNode(
             id = "seminar_hall",
             name = "Seminar Hall",
@@ -25,6 +31,9 @@ object NavigationMockData {
             type = NodeType.ROOM
         ),
 
+        // =========================
+        // Corridor / Connecting Nodes
+        // =========================
         NavigationNode("conn_1", "Connecting Node", 1, 1110f, 1240f, NodeType.CORRIDOR),
         NavigationNode("conn_2", "Connecting Node", 1, 1110f, 1110f, NodeType.CORRIDOR),
         NavigationNode("conn_3", "Connecting Node", 1, 1110f, 830f, NodeType.CORRIDOR),
@@ -32,29 +41,50 @@ object NavigationMockData {
         NavigationNode("conn_5", "Connecting Node", 1, 2310f, 1720f, NodeType.CORRIDOR),
         NavigationNode("conn_6", "Connecting Node", 1, 3610f, 1720f, NodeType.CORRIDOR),
 
+        // =========================
+        // West Wing Rooms
+        // =========================
         NavigationNode("room_1610", "J1610", 1, 1230f, 830f, NodeType.ROOM),
         NavigationNode("room_1620", "J1620", 1, 1600f, 830f, NodeType.ROOM),
         NavigationNode("room_1630", "J1630", 1, 1980f, 830f, NodeType.ROOM),
         NavigationNode("room_1640", "J1640", 1, 2310f, 720f, NodeType.ROOM),
         NavigationNode("room_1650_1660", "J1650 / J1660", 1, 2610f, 720f, NodeType.ROOM),
 
+        // =========================
+        // East Wing Rooms
+        // =========================
         NavigationNode("room_1670", "J1670", 1, 3000f, 1720f, NodeType.ROOM),
         NavigationNode("room_1680", "J1680", 1, 3530f, 1720f, NodeType.ROOM),
 
+        // =========================
+        // Common Areas
+        // =========================
         NavigationNode("cafeteria", "Cafeteria", 1, 2740f, 1720f, NodeType.ROOM),
         NavigationNode("workspace", "Workspace", 1, 3610f, 1830f, NodeType.ROOM),
 
+        // =========================
+        // Amenities
+        // =========================
         NavigationNode("washroom_west", "Washroom", 1, 900f, 1110f, NodeType.RESTROOM),
         NavigationNode("washroom_east", "Washroom", 1, 3860f, 1720f, NodeType.RESTROOM),
+
+
+
     )
 
     val navigationEdges = listOf(
 
+        // =========================
+        // Seminar Hall Path
+        // =========================
         NavigationEdge("seminar_hall", "conn_1", 1f),
         NavigationEdge("conn_1", "conn_2", 1f),
         NavigationEdge("conn_2", "washroom_west", 1f),
         NavigationEdge("conn_2", "conn_3", 1f),
 
+        // =========================
+        // Room Corridor (J1610–J1660)
+        // =========================
         NavigationEdge("conn_3", "room_1610", 1f),
         NavigationEdge("room_1610", "room_1620", 1f),
         NavigationEdge("room_1620", "room_1630", 1f),
@@ -62,23 +92,37 @@ object NavigationMockData {
         NavigationEdge("conn_4", "room_1640", 1f),
         NavigationEdge("room_1640", "room_1650_1660", 1f),
 
+        // =========================
+        // East Wing Path
+        // =========================
         NavigationEdge("conn_4", "conn_5", 1f),
         NavigationEdge("conn_5", "cafeteria", 1f),
         NavigationEdge("cafeteria", "room_1670", 1f),
         NavigationEdge("room_1670", "room_1680", 1f),
         NavigationEdge("room_1680", "conn_6", 1f),
 
+        // =========================
+        // Amenities & Exit
+        // =========================
         NavigationEdge("conn_6", "workspace", 1f),
         NavigationEdge("conn_6", "washroom_east", 1f),
         NavigationEdge("washroom_east", "entrance_main", 1f)
     )
 
-    val navigationGraph = NavigationGraph(navigationNodes, navigationEdges)
 
+
+val navigationGraph = NavigationGraph(navigationNodes, navigationEdges)
+
+    /**
+     * Returns all navigation nodes on a given floor
+     */
     fun getNodesByFloor(floor: Int): List<NavigationNode> {
         return navigationNodes.filter { it.floor == floor }
     }
 
+    /**
+     * Returns all edges where both nodes exist on the given floor
+     */
     fun getEdgesByFloor(floor: Int): List<NavigationEdge> {
         val nodesOnFloor = getNodesByFloor(floor).map { it.id }.toSet()
         return navigationEdges.filter {
@@ -86,12 +130,19 @@ object NavigationMockData {
         }
     }
 
+    /**
+     * Finds a node by partial or full name (case-insensitive)
+     */
     fun findNodeByName(name: String): NavigationNode? {
         return navigationNodes.find {
             it.name.contains(name, ignoreCase = true)
         }
     }
 
+    /**
+     * Maps room names (user input / search / QR scan)
+     * to actual navigation nodes
+     */
     fun getNavigationNodeForRoom(roomName: String): NavigationNode? {
         return when (roomName.uppercase()) {
 
@@ -111,6 +162,9 @@ object NavigationMockData {
         }
     }
 
+    /**
+     * Maps Points of Interest (POIs) like Washrooms, Elevator, Stairs
+     */
     fun getNavigationNodeForPOI(poiName: String): NavigationNode? {
         return when {
             poiName.contains("WASH", ignoreCase = true) ||

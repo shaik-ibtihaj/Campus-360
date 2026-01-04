@@ -258,7 +258,22 @@ fun FloorMapLegend(modifier: Modifier = Modifier) {
             .background(Color.White.copy(alpha = 0.9f))
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) 
+    ) {
+//        Text(
+//            "Legend",
+//            fontSize = 12.sp,
+//            fontWeight = FontWeight.Bold,
+//            color = Color.Black
+//        )
+//
+//        LegendItem(Color(0xFF4CAF50), "Start")
+//        LegendItem(Color(0xFFF44336), "Destination")
+//        LegendItem(Color(0xFF1976D2), "Path")
+//        LegendItem(Color(0xFFFF9800), "Stairs")
+//        LegendItem(Color(0xFF9C27B0), "Elevator")
+//        LegendItem(Color(0xFF2196F3), "Room")
+//        LegendItem(Color(0xFF00BCD4), "Restroom")
+    }
 }
 
 @Composable

@@ -75,7 +75,7 @@ fun RoomDetailsScreen(navController: NavController, roomId: String) {
             )
         }
     ) { paddingValues ->
-                Column(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -144,9 +144,28 @@ fun RoomDetailsScreen(navController: NavController, roomId: String) {
                             color = Color.Gray
                         )
                     }
+                    
+//                    if (room.isAccessible) {
+//                        Spacer(modifier = Modifier.height(8.dp))
+//                        Row(verticalAlignment = Alignment.CenterVertically) {
+//                          Icon(
+//                              Icons.Outlined.CheckCircle,
+//                              contentDescription = null,
+//                              tint = Color(0xFF4CAF50),
+//                              modifier = Modifier.size(20.dp)
+//                          )
+//                            Spacer(modifier = Modifier.width(8.dp))
+//                            Text(
+//                                "Wheelchair Accessible",
+//                                fontSize = 16.sp,
+//                                color = Color(0xFF4CAF50)
+//                            )
+//                        }
+//                    }
                 }
             }
-                        Card(
+            
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -179,6 +198,23 @@ fun RoomDetailsScreen(navController: NavController, roomId: String) {
                                 color = Color.Gray
                             )
                         }
+                        
+//                        if (room.currentOccupancy != null) {
+//                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                                Text(
+//                                    "${room.currentOccupancy}",
+//                                    fontSize = 32.sp,
+//                                    fontWeight = FontWeight.Bold,
+//                                    color = if (room.currentOccupancy < room.capacity * 0.8)
+//                                        Color(0xFF4CAF50) else Color(0xFFFF9800)
+//                                )
+//                                Text(
+//                                    "Current",
+//                                    fontSize = 14.sp,
+//                                    color = Color.Gray
+//                                )
+//                            }
+//                        }
                     }
                 }
             }
@@ -218,6 +254,51 @@ fun RoomDetailsScreen(navController: NavController, roomId: String) {
                 }
             }
             
+//            if (room.schedule.isNotEmpty()) {
+//                Spacer(modifier = Modifier.height(16.dp))
+//
+//                Card(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 16.dp),
+//                    colors = CardDefaults.cardColors(containerColor = Color.White),
+//                    shape = RoundedCornerShape(12.dp)
+//                ) {
+//                    Column(modifier = Modifier.padding(16.dp)) {
+//                        Text(
+//                            "Today's Schedule",
+//                            fontSize = 18.sp,
+//                            fontWeight = FontWeight.SemiBold,
+//                            color = Color.Black
+//                        )
+//                        Spacer(modifier = Modifier.height(12.dp))
+//
+//                        room.schedule.forEach { slot ->
+//                            Row(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(vertical = 8.dp),
+//                                horizontalArrangement = Arrangement.SpaceBetween,
+//                                verticalAlignment = Alignment.CenterVertically
+//                            ) {
+//                                Text(
+//                                    slot.time,
+//                                    fontSize = 14.sp,
+//                                    fontWeight = FontWeight.Medium,
+//                                    color = Color.Black
+//                                )
+//                                Text(
+//                                    slot.event,
+//                                    fontSize = 14.sp,
+//                                    color = if (slot.isAvailable) Color(0xFF4CAF50) else Color.Gray
+//                                )
+//                            }
+//                            HorizontalDivider(color = Color(0xFFF0F0F0))
+//                        }
+//                    }
+//                }
+//            }
+            
             Spacer(modifier = Modifier.height(24.dp))
             
             Button(
@@ -241,4 +322,3 @@ fun RoomDetailsScreen(navController: NavController, roomId: String) {
         }
     }
 }
-
