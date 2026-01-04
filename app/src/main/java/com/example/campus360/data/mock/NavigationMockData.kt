@@ -1,0 +1,136 @@
+package com.example.campus360.data.mock
+
+import com.example.campus360.data.model.*
+import com.example.campus360.data.NavigationGraph
+
+object NavigationMockData {
+
+    val navigationNodes = listOf(
+
+        NavigationNode(
+            id = "entrance_main",
+            name = "Entrance",
+            floor = 1,
+            x = 4100f,
+            y = 1720f,
+            type = NodeType.ENTRANCE
+        ),
+      
+        NavigationNode(
+            id = "seminar_hall",
+            name = "Seminar Hall",
+            floor = 1,
+            x = 1030f,
+            y = 1420f,
+            type = NodeType.ROOM
+        ),
+
+        NavigationNode("conn_1", "Connecting Node", 1, 1110f, 1240f, NodeType.CORRIDOR),
+        NavigationNode("conn_2", "Connecting Node", 1, 1110f, 1110f, NodeType.CORRIDOR),
+        NavigationNode("conn_3", "Connecting Node", 1, 1110f, 830f, NodeType.CORRIDOR),
+        NavigationNode("conn_4", "Connecting Node", 1, 2310f, 830f, NodeType.CORRIDOR),
+        NavigationNode("conn_5", "Connecting Node", 1, 2310f, 1720f, NodeType.CORRIDOR),
+        NavigationNode("conn_6", "Connecting Node", 1, 3610f, 1720f, NodeType.CORRIDOR),
+
+        NavigationNode("room_1610", "J1610", 1, 1230f, 830f, NodeType.ROOM),
+        NavigationNode("room_1620", "J1620", 1, 1600f, 830f, NodeType.ROOM),
+        NavigationNode("room_1630", "J1630", 1, 1980f, 830f, NodeType.ROOM),
+        NavigationNode("room_1640", "J1640", 1, 2310f, 720f, NodeType.ROOM),
+        NavigationNode("room_1650_1660", "J1650 / J1660", 1, 2610f, 720f, NodeType.ROOM),
+
+        NavigationNode("room_1670", "J1670", 1, 3000f, 1720f, NodeType.ROOM),
+        NavigationNode("room_1680", "J1680", 1, 3530f, 1720f, NodeType.ROOM),
+
+        NavigationNode("cafeteria", "Cafeteria", 1, 2740f, 1720f, NodeType.ROOM),
+        NavigationNode("workspace", "Workspace", 1, 3610f, 1830f, NodeType.ROOM),
+
+        NavigationNode("washroom_west", "Washroom", 1, 900f, 1110f, NodeType.RESTROOM),
+        NavigationNode("washroom_east", "Washroom", 1, 3860f, 1720f, NodeType.RESTROOM),
+    )
+
+    val navigationEdges = listOf(
+
+        NavigationEdge("seminar_hall", "conn_1", 1f),
+        NavigationEdge("conn_1", "conn_2", 1f),
+        NavigationEdge("conn_2", "washroom_west", 1f),
+        NavigationEdge("conn_2", "conn_3", 1f),
+
+        NavigationEdge("conn_3", "room_1610", 1f),
+        NavigationEdge("room_1610", "room_1620", 1f),
+        NavigationEdge("room_1620", "room_1630", 1f),
+        NavigationEdge("room_1630", "conn_4", 1f),
+        NavigationEdge("conn_4", "room_1640", 1f),
+        NavigationEdge("room_1640", "room_1650_1660", 1f),
+
+        NavigationEdge("conn_4", "conn_5", 1f),
+        NavigationEdge("conn_5", "cafeteria", 1f),
+        NavigationEdge("cafeteria", "room_1670", 1f),
+        NavigationEdge("room_1670", "room_1680", 1f),
+        NavigationEdge("room_1680", "conn_6", 1f),
+
+        NavigationEdge("conn_6", "workspace", 1f),
+        NavigationEdge("conn_6", "washroom_east", 1f),
+        NavigationEdge("washroom_east", "entrance_main", 1f)
+    )
+
+    val navigationGraph = NavigationGraph(navigationNodes, navigationEdges)
+
+    fun getNodesByFloor(floor: Int): List<NavigationNode> {
+        return navigationNodes.filter { it.floor == floor }
+    }
+
+    fun getEdgesByFloor(floor: Int): List<NavigationEdge> {
+        val nodesOnFloor = getNodesByFloor(floor).map { it.id }.toSet()
+        return navigationEdges.filter {
+            it.fromNodeId in nodesOnFloor && it.toNodeId in nodesOnFloor
+        }
+    }
+
+    fun findNodeByName(name: String): NavigationNode? {
+        return navigationNodes.find {
+            it.name.contains(name, ignoreCase = true)
+        }
+    }
+
+    fun getNavigationNodeForRoom(roomName: String): NavigationNode? {
+        return when (roomName.uppercase()) {
+
+            "J1610" -> navigationNodes.find { it.id == "room_1610" }
+            "J1620" -> navigationNodes.find { it.id == "room_1620" }
+            "J1630" -> navigationNodes.find { it.id == "room_1630" }
+            "J1640" -> navigationNodes.find { it.id == "room_1640" }
+            "J1650" -> navigationNodes.find { it.id == "room_1650" }
+            "J1660" -> navigationNodes.find { it.id == "room_1660" }
+            "J1670" -> navigationNodes.find { it.id == "room_1670" }
+            "J1680" -> navigationNodes.find { it.id == "room_1680" }
+
+            "SEMINAR HALL" -> navigationNodes.find { it.id == "seminar_hall" }
+            "CAFETERIA" -> navigationNodes.find { it.id == "cafeteria" }
+
+            else -> findNodeByName(roomName)
+        }
+    }
+
+    fun getNavigationNodeForPOI(poiName: String): NavigationNode? {
+        return when {
+            poiName.contains("WASH", ignoreCase = true) ||
+            poiName.contains("RESTROOM", ignoreCase = true) ->
+                navigationNodes.find { it.type == NodeType.RESTROOM }
+
+            poiName.contains("ELEVATOR", ignoreCase = true) ->
+                navigationNodes.find { it.type == NodeType.ELEVATOR }
+
+            poiName.contains("STAIR", ignoreCase = true) ->
+                navigationNodes.find { it.type == NodeType.STAIRS }
+
+            poiName.contains("ENTRANCE", ignoreCase = true) ->
+                navigationNodes.find { it.type == NodeType.ENTRANCE }
+
+            poiName.contains("FOOD", ignoreCase = true) ||
+            poiName.contains("CAFE", ignoreCase = true) ->
+                navigationNodes.find { it.id == "cafeteria" }
+
+            else -> null
+        }
+    }
+}
